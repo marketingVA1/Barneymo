@@ -1,0 +1,120 @@
+import { Card } from "./ui/card";
+import { 
+  Target, 
+  Settings, 
+  Mail, 
+  Share2, 
+  PenTool, 
+  Calendar,
+  Brain
+} from "lucide-react";
+import { motion } from "motion/react";
+import { useScrollAnimation, staggerContainer, staggerItem } from "./hooks/useScrollAnimation";
+
+const services = [
+  {
+    icon: Target,
+    title: "Lead Generation & Outreach",
+    description: "Turn strangers into prospects with targeted, multi-channel outreach via LinkedIn, email, and custom prospect lists. I use tools like Apollo.io, Hunter.io, and LinkedIn Sales Navigator to find and engage the right leads not just more leads.",
+    color: "text-clientflow-coral"
+  },
+  {
+    icon: Settings,
+    title: "CRM Setup & Automation",
+    description: "Organize and streamline your sales process with CRMs like HubSpot, Pipedrive, and Zoho CRM. I set up pipelines, automate follow-ups, and create workflows that save hours every week.",
+    color: "text-clientflow-navy"
+  },
+  {
+    icon: Mail,
+    title: "Email Marketing",
+    description: "Plan, design, and send high-converting email campaigns using Mailchimp and ActiveCampaign. I handle audience segmentation, A/B testing, and performance tracking to keep your open rates and conversions climbing.",
+    color: "text-clientflow-coral"
+  },
+  {
+    icon: Share2,
+    title: "Social Media Management",
+    description: "Boost brand visibility and engagement with tailored content, graphic design in Canva, and scheduling through Buffer, Hootsuite, Later, and Metricool. I track analytics to refine your content strategy for maximum reach.",
+    color: "text-clientflow-navy"
+  },
+  {
+    icon: PenTool,
+    title: "Content Creation & Marketing",
+    description: "Develop compelling copy and visuals that grab attention, build trust, and inspire action. I align messaging across all channels to create a consistent, professional brand presence.",
+    color: "text-clientflow-coral"
+  },
+  {
+    icon: Calendar,
+    title: "Project Coordination & Admin Support",
+    description: "Keep your operations running smoothly with calendar management, research, and reporting through Google Workspace and Calendly. I ensure deadlines are met and projects stay on track.",
+    color: "text-clientflow-navy"
+  },
+  {
+    icon: Brain,
+    title: "Continuous Learning & AI Tools",
+    description: "I'm constantly upskilling from advanced CRM automation to leveraging AI tools like ChatGPT to keep your marketing strategy ahead of the curve.",
+    color: "text-clientflow-coral"
+  }
+];
+
+export function ServicesSection() {
+  const { ref, isInView } = useScrollAnimation();
+
+  return (
+    <section id="services" className="py-20 bg-clientflow-light-gray/30" ref={ref}>
+      <div className="container mx-auto px-6">
+        <motion.div 
+          className="text-center mb-12"
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <h2 className="text-3xl lg:text-4xl font-bold text-clientflow-navy mb-4">
+            What I Can Do
+          </h2>
+          <div className="w-20 h-1 bg-clientflow-coral mx-auto mb-6"></div>
+          <p className="text-xl text-clientflow-charcoal max-w-2xl mx-auto">
+            Comprehensive marketing services designed to grow your business
+          </p>
+        </motion.div>
+        
+        <motion.div 
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+          variants={staggerContainer}
+          initial="initial"
+          animate={isInView ? "animate" : "initial"}
+        >
+          {services.map((service, index) => (
+            <motion.div key={index} variants={staggerItem}>
+              <Card className="p-6 border-none h-full service-card-hover cursor-pointer bg-white/80 backdrop-blur-sm">
+                <div className="flex flex-col h-full">
+                  <motion.div 
+                    className={`w-12 h-12 rounded-lg bg-white shadow-md flex items-center justify-center mb-4`}
+                    whileHover={{ 
+                      scale: 1.15, 
+                      rotate: 5,
+                      boxShadow: "0 8px 25px rgba(255, 79, 115, 0.2)"
+                    }}
+                    transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                  >
+                    <service.icon className={`h-6 w-6 ${service.color}`} />
+                  </motion.div>
+                  
+                  <motion.h3 
+                    className="font-semibold text-clientflow-navy mb-3 transition-colors duration-300"
+                    whileHover={{ color: "var(--clientflow-coral)" }}
+                  >
+                    {service.title}
+                  </motion.h3>
+                  
+                  <p className="text-clientflow-charcoal/80 leading-relaxed flex-grow">
+                    {service.description}
+                  </p>
+                </div>
+              </Card>
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
+    </section>
+  );
+}

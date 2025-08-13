@@ -1,0 +1,76 @@
+import { Button } from "./ui/button";
+import { Download, FileText } from "lucide-react";
+import { Card } from "./ui/card";
+import { motion } from "motion/react";
+import { useScrollAnimation } from "./hooks/useScrollAnimation";
+
+export function ResumeSection() {
+  const { ref, isInView } = useScrollAnimation();
+
+  const handleDownload = () => {
+    // In a real application, this would download an actual PDF
+    alert("Resume download feature would be implemented here with a real PDF file.");
+  };
+
+  return (
+    <section className="py-20 bg-white" ref={ref}>
+      <div className="container mx-auto px-6">
+        <motion.div 
+          className="max-w-2xl mx-auto text-center"
+          initial={{ opacity: 0, y: 40 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <Card className="p-8 lg:p-12 bg-gradient-to-br from-clientflow-light-gray/50 to-white border-none shadow-lg hover-lift">
+            <motion.div 
+              className="w-16 h-16 bg-clientflow-coral/10 rounded-full flex items-center justify-center mx-auto mb-6"
+              whileHover={{ 
+                scale: 1.1, 
+                rotate: 10,
+                boxShadow: "0 8px 25px rgba(255, 79, 115, 0.2)" 
+              }}
+              transition={{ duration: 0.3 }}
+            >
+              <FileText className="h-8 w-8 text-clientflow-coral" />
+            </motion.div>
+            
+            <motion.h2 
+              className="text-3xl font-bold text-clientflow-navy mb-4"
+              initial={{ opacity: 0 }}
+              animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+              transition={{ delay: 0.2, duration: 0.6 }}
+            >
+              Download My Resume
+            </motion.h2>
+            
+            <motion.p 
+              className="text-lg text-clientflow-charcoal mb-8 leading-relaxed"
+              initial={{ opacity: 0 }}
+              animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+              transition={{ delay: 0.3, duration: 0.6 }}
+            >
+              Get the full details of my experience, certifications, and achievements in marketing automation and lead generation.
+            </motion.p>
+            
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
+              transition={{ delay: 0.4, duration: 0.5 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <Button 
+                size="lg"
+                onClick={handleDownload}
+                className="bg-clientflow-navy hover:bg-clientflow-navy/90 text-white px-8 py-4 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group button-coral-hover"
+              >
+                <Download className="mr-2 h-5 w-5 group-hover:translate-y-0.5 transition-transform" />
+                Download Resume (PDF)
+              </Button>
+            </motion.div>
+          </Card>
+        </motion.div>
+      </div>
+    </section>
+  );
+}

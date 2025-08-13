@@ -1,0 +1,102 @@
+import { Card } from "./ui/card";
+import { ImageWithFallback } from "./figma/ImageWithFallback";
+import { motion } from "motion/react";
+import { useScrollAnimation, fadeInUp, staggerContainer, staggerItem } from "./hooks/useScrollAnimation";
+
+export function AboutSection() {
+  const { ref, isInView } = useScrollAnimation();
+
+  return (
+    <section id="about" className="py-20 bg-white" ref={ref}>
+      <div className="container mx-auto px-6">
+        <div className="max-w-6xl mx-auto">
+          <motion.div 
+            className="text-center mb-12"
+            initial={{ opacity: 0, y: 30 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <h2 className="text-3xl lg:text-4xl font-bold text-clientflow-navy mb-4">
+              About Me
+            </h2>
+            <div className="w-20 h-1 bg-clientflow-coral mx-auto"></div>
+          </motion.div>
+          
+          <motion.div 
+            className="grid lg:grid-cols-2 gap-12 items-center"
+            variants={staggerContainer}
+            initial="initial"
+            animate={isInView ? "animate" : "initial"}
+          >
+            {/* Photo Placeholder */}
+            <motion.div 
+              className="order-2 lg:order-1"
+              variants={staggerItem}
+            >
+              <Card className="p-4 bg-clientflow-light-gray/50 border-none shadow-lg hover-lift">
+                <div className="aspect-[4/5] bg-gradient-to-br from-clientflow-blush/20 to-clientflow-coral/20 rounded-lg border-2 border-dashed border-clientflow-navy/30 flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="w-16 h-16 bg-clientflow-navy/10 rounded-full mx-auto mb-4 flex items-center justify-center">
+                      <svg className="w-8 h-8 text-clientflow-navy/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                    </div>
+                    <p className="text-clientflow-navy/60 font-medium">Photo Placeholder</p>
+                    <p className="text-clientflow-navy/40 text-sm mt-1">Add your professional photo here</p>
+                  </div>
+                </div>
+              </Card>
+            </motion.div>
+            
+            {/* About Text */}
+            <motion.div 
+              className="order-1 lg:order-2"
+              variants={staggerItem}
+            >
+              <Card className="p-8 lg:p-10 bg-clientflow-light-gray/50 border-none shadow-lg hover-lift">
+                <div className="space-y-6 text-lg leading-relaxed text-clientflow-charcoal">
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+                    transition={{ delay: 0.2, duration: 0.6 }}
+                  >
+                    I'm Kim, the person businesses call when they're tired of chasing leads and ready to start attracting them.
+                  </motion.p>
+                  
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+                    transition={{ delay: 0.4, duration: 0.6 }}
+                  >
+                    As a <strong className="text-clientflow-navy">Google-certified Marketing Virtual Assistant</strong>, I've helped brands 
+                    increase high-quality leads by <strong className="text-clientflow-coral">45% in just three months</strong>, boost conversions by 
+                    over <strong className="text-clientflow-coral">30%</strong>, and turn complex marketing chaos into smooth, automated systems that run themselves.
+                  </motion.p>
+                  
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+                    transition={{ delay: 0.6, duration: 0.6 }}
+                  >
+                    I'm not here to "do tasks." I'm here to be your behind-the-scenes growth engine, building campaigns, automating follow-ups, 
+                    and creating marketing strategies that work while you sleep. From email and LinkedIn outreach to content strategy and CRM automation, 
+                    I blend creative problem-solving with data-backed execution so your business gets noticed, trusted, and chosen.
+                  </motion.p>
+                  
+                  <motion.p 
+                    className="text-clientflow-navy font-semibold"
+                    initial={{ opacity: 0 }}
+                    animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+                    transition={{ delay: 0.8, duration: 0.6 }}
+                  >
+                    If you're looking for someone who will care about your growth as much as you do, you just found him.
+                  </motion.p>
+                </div>
+              </Card>
+            </motion.div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+}

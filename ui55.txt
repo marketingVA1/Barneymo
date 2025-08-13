@@ -1,0 +1,102 @@
+import { Card } from "./ui/card";
+import { Badge } from "./ui/badge";
+import { motion } from "motion/react";
+import { useScrollAnimation, staggerContainer, staggerItem } from "./hooks/useScrollAnimation";
+
+const toolCategories = [
+  {
+    category: "CRM & Marketing Automation",
+    tools: ["HubSpot", "Mailchimp", "Apollo.io", "Pipedrive", "Zoho CRM", "Keap (Infusionsoft)", "ActiveCampaign", "GoHighLevel", "Salesforce", "and more"],
+    color: "bg-clientflow-navy text-white"
+  },
+  {
+    category: "Lead Generation & Outreach",
+    tools: ["LinkedIn Sales Navigator", "Hunter.io", "Snov.io", "Lemlist", "Phantombuster", "Clearbit", "and more"],
+    color: "bg-clientflow-coral text-white"
+  },
+  {
+    category: "Social Media Management",
+    tools: ["Canva", "Buffer", "Hootsuite", "Later", "Metricool", "and more"],
+    color: "bg-clientflow-blush text-clientflow-navy"
+  },
+  {
+    category: "AI Tools",
+    tools: ["ChatGPT", "Jasper AI", "Copy.ai", "Writesonic", "Grammarly", "Claude AI", "Notion AI", "Canva AI Features", "Agnes", "and more"],
+    color: "bg-gradient-to-r from-clientflow-navy to-clientflow-coral text-white"
+  },
+  {
+    category: "Project Management & Collaboration",
+    tools: ["Trello", "Asana", "ClickUp", "Notion", "Slack", "Microsoft Teams", "and more"],
+    color: "bg-clientflow-charcoal text-white"
+  },
+  {
+    category: "Scheduling & Admin",
+    tools: ["Calendly", "Google Workspace", "Microsoft Office 365", "Zoom", "Loom", "Dropbox", "and more"],
+    color: "bg-gray-100 text-clientflow-charcoal border border-gray-200"
+  }
+];
+
+export function ToolsSection() {
+  const { ref, isInView } = useScrollAnimation();
+
+  return (
+    <section className="py-20 bg-white" ref={ref}>
+      <div className="container mx-auto px-6">
+        <motion.div 
+          className="text-center mb-12"
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <h2 className="text-3xl lg:text-4xl font-bold text-clientflow-navy mb-4">
+            Tools I Use
+          </h2>
+          <div className="w-20 h-1 bg-clientflow-coral mx-auto mb-6"></div>
+          <p className="text-xl text-clientflow-charcoal max-w-2xl mx-auto">
+            Professional-grade tools and platforms I leverage to deliver exceptional results
+          </p>
+        </motion.div>
+        
+        <motion.div 
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+          variants={staggerContainer}
+          initial="initial"
+          animate={isInView ? "animate" : "initial"}
+        >
+          {toolCategories.map((category, index) => (
+            <motion.div key={index} variants={staggerItem}>
+              <Card className="p-6 border-none tool-category-hover animate-glow-blue h-full">
+                <motion.div 
+                  className={`inline-block px-4 py-2 rounded-lg mb-4 ${category.color}`}
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <h3 className="font-semibold">{category.category}</h3>
+                </motion.div>
+                <div className="flex flex-wrap gap-2">
+                  {category.tools.map((tool, toolIndex) => (
+                    <motion.div
+                      key={toolIndex}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+                      transition={{ delay: 0.1 * toolIndex, duration: 0.3 }}
+                    >
+                      <Badge 
+                        variant="outline" 
+                        className={`border-clientflow-navy/20 text-clientflow-charcoal hover:bg-clientflow-blush/10 transition-all duration-300 hover:scale-105 ${
+                          tool === "and more" ? "font-medium text-clientflow-coral border-clientflow-coral/30" : ""
+                        }`}
+                      >
+                        {tool}
+                      </Badge>
+                    </motion.div>
+                  ))}
+                </div>
+              </Card>
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
+    </section>
+  );
+}

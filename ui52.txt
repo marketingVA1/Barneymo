@@ -1,0 +1,97 @@
+import { Button } from "./ui/button";
+import { ArrowRight } from "lucide-react";
+import { motion } from "motion/react";
+
+export function HeroSection() {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.3,
+        delayChildren: 0.2
+      }
+    }
+  };
+
+  const headlineVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.8,
+        ease: [0.22, 1, 0.36, 1]
+      }
+    }
+  };
+
+  const sublineVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: [0.22, 1, 0.36, 1]
+      }
+    }
+  };
+
+  const buttonVariants = {
+    hidden: { opacity: 0, scale: 0.9 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: {
+        duration: 0.5,
+        ease: [0.22, 1, 0.36, 1]
+      }
+    }
+  };
+
+  return (
+    <section className="bg-gradient-to-br from-clientflow-light-gray to-white py-20 lg:py-32 overflow-hidden">
+      <div className="container mx-auto px-6">
+        <motion.div 
+          className="max-w-4xl mx-auto text-center"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <motion.h1 
+            className="text-4xl lg:text-6xl font-bold text-clientflow-navy mb-6 leading-tight"
+            variants={headlineVariants}
+          >
+            Hi, I'm Kim, Your Behind-the-Scenes{" "}
+            <span className="text-clientflow-coral">Marketing Engine</span>{" "}
+            for Consistent Clients
+          </motion.h1>
+          
+          <motion.p 
+            className="text-xl lg:text-2xl text-clientflow-charcoal mb-8 leading-relaxed max-w-3xl mx-auto"
+            variants={sublineVariants}
+          >
+            I help busy business owners attract and convert high-quality leads through smart marketing systems, 
+            engaging content, and outreach strategies that work even when you're off the clock.
+          </motion.p>
+          
+          <motion.div 
+            variants={buttonVariants}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <Button 
+              size="lg"
+              className="bg-clientflow-coral hover:bg-clientflow-coral/90 text-white px-8 py-6 text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group button-coral-hover"
+              onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+            >
+              Let's Grow Your Client List
+              <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </motion.div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}

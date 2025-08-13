@@ -1,0 +1,464 @@
+import { Card } from "./ui/card";
+import { Button } from "./ui/button";
+import { ImageWithFallback } from "./figma/ImageWithFallback";
+import { ArrowLeft, ExternalLink } from "lucide-react";
+import { useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import { useScrollAnimation, staggerContainer, staggerItem } from "./hooks/useScrollAnimation";
+
+interface WorkSample {
+  id: string;
+  title: string;
+  description: string;
+  imageUrl: string;
+  tags: string[];
+}
+
+interface WorkCategory {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  samples: WorkSample[];
+}
+
+const workCategories: WorkCategory[] = [
+  {
+    id: "landing-pages",
+    title: "Landing Page Sample",
+    description: "High-converting landing page design with optimized user flow",
+    category: "Web Design",
+    samples: [
+      {
+        id: "lp-1",
+        title: "SaaS Product Landing Page",
+        description: "Conversion-optimized landing page that increased sign-ups by 65%",
+        imageUrl: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=400&fit=crop",
+        tags: ["High Converting", "SaaS", "Lead Generation"]
+      },
+      {
+        id: "lp-2",
+        title: "E-commerce Product Page",
+        description: "Product page redesign that boosted sales by 40%",
+        imageUrl: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=600&h=400&fit=crop",
+        tags: ["E-commerce", "Sales Optimization", "UX Design"]
+      },
+      {
+        id: "lp-3",
+        title: "Service Business Landing",
+        description: "Professional service landing page with integrated booking system",
+        imageUrl: "https://images.unsplash.com/photo-1551650975-87deedd944c3?w=600&h=400&fit=crop",
+        tags: ["Service Business", "Booking Integration", "Professional"]
+      }
+    ]
+  },
+  {
+    id: "email-newsletters",
+    title: "Email Newsletter Sample",
+    description: "Engaging email campaign with 45% open rate improvement",
+    category: "Email Marketing",
+    samples: [
+      {
+        id: "en-1",
+        title: "Weekly Industry Newsletter",
+        description: "Weekly newsletter template with 52% open rate and 12% CTR",
+        imageUrl: "https://images.unsplash.com/photo-1596526131083-e8c633c948d2?w=600&h=400&fit=crop",
+        tags: ["Newsletter", "High Open Rate", "Industry News"]
+      },
+      {
+        id: "en-2",
+        title: "Product Launch Campaign",
+        description: "5-part email sequence generating $50K in pre-orders",
+        imageUrl: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=600&h=400&fit=crop",
+        tags: ["Product Launch", "Email Sequence", "Revenue Generation"]
+      },
+      {
+        id: "en-3",
+        title: "Customer Onboarding Series",
+        description: "7-email onboarding sequence reducing churn by 35%",
+        imageUrl: "https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=600&h=400&fit=crop",
+        tags: ["Onboarding", "Customer Retention", "Automation"]
+      }
+    ]
+  },
+  {
+    id: "blog-posts",
+    title: "Blog Post",
+    description: "SEO-optimized content that drives organic traffic",
+    category: "Content Marketing",
+    samples: [
+      {
+        id: "bp-1",
+        title: "Ultimate Guide to Lead Generation",
+        description: "3,500-word comprehensive guide ranking #1 for target keywords",
+        imageUrl: "https://images.unsplash.com/photo-1486312338219-ce68e2c6f44d?w=600&h=400&fit=crop",
+        tags: ["SEO", "Lead Generation", "Ultimate Guide"]
+      },
+      {
+        id: "bp-2",
+        title: "Marketing Automation Case Study",
+        description: "In-depth case study showing 300% ROI improvement",
+        imageUrl: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop",
+        tags: ["Case Study", "Marketing Automation", "ROI"]
+      },
+      {
+        id: "bp-3",
+        title: "Social Media Strategy Framework",
+        description: "Step-by-step framework increasing engagement by 200%",
+        imageUrl: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=600&h=400&fit=crop",
+        tags: ["Social Media", "Strategy", "Framework"]
+      }
+    ]
+  },
+  {
+    id: "content-calendars",
+    title: "Content Calendar",
+    description: "Strategic 3-month content planning and scheduling",
+    category: "Strategy",
+    samples: [
+      {
+        id: "cc-1",
+        title: "Q1 Social Media Calendar",
+        description: "90-day content calendar with 150+ post ideas and templates",
+        imageUrl: "https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=600&h=400&fit=crop",
+        tags: ["Social Media", "Content Planning", "Templates"]
+      },
+      {
+        id: "cc-2",
+        title: "Blog Content Strategy",
+        description: "6-month editorial calendar driving 400% traffic increase",
+        imageUrl: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&h=400&fit=crop",
+        tags: ["Blog Strategy", "Editorial Calendar", "SEO"]
+      },
+      {
+        id: "cc-3",
+        title: "Multi-Channel Campaign Calendar",
+        description: "Integrated campaign across 5 channels with tracking metrics",
+        imageUrl: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=600&h=400&fit=crop",
+        tags: ["Multi-Channel", "Campaign Planning", "Analytics"]
+      }
+    ]
+  },
+  {
+    id: "lead-lists",
+    title: "Sample Lead List",
+    description: "Targeted prospect research and qualification process",
+    category: "Lead Generation",
+    samples: [
+      {
+        id: "ll-1",
+        title: "SaaS Decision Makers List",
+        description: "500 qualified SaaS decision makers with 85% email accuracy",
+        imageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=400&fit=crop",
+        tags: ["SaaS", "Decision Makers", "High Accuracy"]
+      },
+      {
+        id: "ll-2",
+        title: "E-commerce Store Owners",
+        description: "300 verified e-commerce owners generating $1M+ annually",
+        imageUrl: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=400&fit=crop",
+        tags: ["E-commerce", "Store Owners", "High Revenue"]
+      },
+      {
+        id: "ll-3",
+        title: "HR Directors Contact List",
+        description: "250 HR directors at companies with 100+ employees",
+        imageUrl: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&h=400&fit=crop",
+        tags: ["HR Directors", "Enterprise", "Verified Contacts"]
+      }
+    ]
+  }
+];
+
+export function WorkSamplesSection() {
+  const [selectedCategory, setSelectedCategory] = useState<WorkCategory | null>(null);
+  const [selectedSample, setSelectedSample] = useState<WorkSample | null>(null);
+  const { ref, isInView } = useScrollAnimation();
+
+  const handleCategoryClick = (category: WorkCategory) => {
+    setSelectedCategory(category);
+    setSelectedSample(null);
+  };
+
+  const handleSampleClick = (sample: WorkSample) => {
+    setSelectedSample(sample);
+  };
+
+  const handleBackToCategories = () => {
+    setSelectedCategory(null);
+    setSelectedSample(null);
+  };
+
+  const handleBackToSamples = () => {
+    setSelectedSample(null);
+  };
+
+  if (selectedSample) {
+    // Individual Sample View
+    return (
+      <>
+        <motion.div 
+          className="page-dim-overlay"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+        />
+        <motion.section 
+          id="work" 
+          className="py-20 bg-clientflow-light-gray/30 relative z-50"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.95 }}
+          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <div className="container mx-auto px-6">
+            <div className="max-w-4xl mx-auto">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2, duration: 0.4 }}
+              >
+                <Button 
+                  variant="ghost" 
+                  onClick={handleBackToSamples}
+                  className="mb-8 text-clientflow-navy hover:text-clientflow-coral hover:bg-clientflow-blush/10"
+                >
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Back to {selectedCategory?.title} Samples
+                </Button>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.5 }}
+              >
+                <Card className="overflow-hidden border-none shadow-xl">
+                  <div className="aspect-video bg-gradient-to-br from-clientflow-blush/20 to-clientflow-coral/20 relative overflow-hidden">
+                    <ImageWithFallback
+                      src={selectedSample.imageUrl}
+                      alt={selectedSample.title}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="p-8">
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {selectedSample.tags.map((tag, index) => (
+                        <motion.span 
+                          key={index}
+                          className="inline-block px-3 py-1 bg-clientflow-coral/10 text-clientflow-coral text-sm font-medium rounded-full"
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: 0.5 + (index * 0.1), duration: 0.3 }}
+                        >
+                          {tag}
+                        </motion.span>
+                      ))}
+                    </div>
+                    <h1 className="text-3xl font-bold text-clientflow-navy mb-4">
+                      {selectedSample.title}
+                    </h1>
+                    <p className="text-lg text-clientflow-charcoal leading-relaxed mb-6">
+                      {selectedSample.description}
+                    </p>
+                    <Button className="bg-clientflow-coral hover:bg-clientflow-coral/90 text-white button-coral-hover">
+                      <ExternalLink className="mr-2 h-4 w-4" />
+                      View Full Project
+                    </Button>
+                  </div>
+                </Card>
+              </motion.div>
+            </div>
+          </div>
+        </motion.section>
+      </>
+    );
+  }
+
+  if (selectedCategory) {
+    // Category Samples View
+    return (
+      <>
+        <motion.div 
+          className="page-dim-overlay"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+        />
+        <motion.section 
+          id="work" 
+          className="py-20 bg-clientflow-light-gray/30 relative z-50"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.95 }}
+          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <div className="container mx-auto px-6">
+            <div className="max-w-6xl mx-auto">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2, duration: 0.4 }}
+              >
+                <Button 
+                  variant="ghost" 
+                  onClick={handleBackToCategories}
+                  className="mb-8 text-clientflow-navy hover:text-clientflow-coral hover:bg-clientflow-blush/10"
+                >
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Back to All Work Samples
+                </Button>
+              </motion.div>
+
+              <motion.div 
+                className="text-center mb-12"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.5 }}
+              >
+                <span className="inline-block px-4 py-2 bg-clientflow-blush/20 text-clientflow-navy text-sm font-medium rounded-full mb-4">
+                  {selectedCategory.category}
+                </span>
+                <h2 className="text-3xl lg:text-4xl font-bold text-clientflow-navy mb-4">
+                  {selectedCategory.title}
+                </h2>
+                <div className="w-20 h-1 bg-clientflow-coral mx-auto mb-6"></div>
+                <p className="text-xl text-clientflow-charcoal max-w-2xl mx-auto">
+                  {selectedCategory.description}
+                </p>
+              </motion.div>
+
+              <motion.div 
+                className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+                variants={staggerContainer}
+                initial="initial"
+                animate="animate"
+              >
+                {selectedCategory.samples.map((sample, index) => (
+                  <motion.div 
+                    key={index} 
+                    variants={staggerItem}
+                    whileHover={{ y: -8 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <Card 
+                      className="group border-none overflow-hidden cursor-pointer hover-lift"
+                      onClick={() => handleSampleClick(sample)}
+                    >
+                      <div className="aspect-video bg-gradient-to-br from-clientflow-blush/20 to-clientflow-coral/20 relative overflow-hidden work-sample-container">
+                        <ImageWithFallback
+                          src={sample.imageUrl}
+                          alt={sample.title}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        />
+                        <div className="work-sample-overlay">
+                          <div className="text-center text-white">
+                            <ExternalLink className="w-8 h-8 mx-auto mb-2" />
+                            <p className="font-medium">View Sample</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="p-6">
+                        <div className="flex flex-wrap gap-2 mb-3">
+                          {sample.tags.slice(0, 2).map((tag, tagIndex) => (
+                            <span 
+                              key={tagIndex}
+                              className="inline-block px-2 py-1 bg-clientflow-blush/20 text-clientflow-navy text-xs font-medium rounded-full"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                        <h3 className="font-semibold text-clientflow-navy mb-2 group-hover:text-clientflow-coral transition-colors">
+                          {sample.title}
+                        </h3>
+                        <p className="text-clientflow-charcoal/80 text-sm">
+                          {sample.description}
+                        </p>
+                      </div>
+                    </Card>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </div>
+          </div>
+        </motion.section>
+      </>
+    );
+  }
+
+  // Main Categories View
+  return (
+    <section id="work" className="py-20 bg-clientflow-light-gray/30" ref={ref}>
+      <div className="container mx-auto px-6">
+        <motion.div 
+          className="text-center mb-12"
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <h2 className="text-3xl lg:text-4xl font-bold text-clientflow-navy mb-4">
+            Work Samples
+          </h2>
+          <div className="w-20 h-1 bg-clientflow-coral mx-auto mb-6"></div>
+          <p className="text-xl text-clientflow-charcoal max-w-2xl mx-auto">
+            See examples of my work across different marketing channels and strategies. Click on any category to explore detailed samples.
+          </p>
+        </motion.div>
+        
+        <motion.div 
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+          variants={staggerContainer}
+          initial="initial"
+          animate={isInView ? "animate" : "initial"}
+        >
+          {workCategories.map((category, index) => (
+            <motion.div 
+              key={index} 
+              variants={staggerItem}
+              whileHover={{ y: -6, scale: 1.02 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Card 
+                className="group border-none overflow-hidden cursor-pointer hover-lift"
+                onClick={() => handleCategoryClick(category)}
+              >
+                <div className="aspect-video bg-gradient-to-br from-clientflow-blush/20 to-clientflow-coral/20 relative overflow-hidden work-sample-container">
+                  <ImageWithFallback
+                    src={`https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=250&fit=crop&crop=center`}
+                    alt={category.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                  <div className="work-sample-overlay">
+                    <div className="text-center text-white">
+                      <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-2 backdrop-blur-sm">
+                        <ExternalLink className="h-6 w-6" />
+                      </div>
+                      <p className="font-semibold">View {category.samples.length} Samples</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-6">
+                  <span className="inline-block px-3 py-1 bg-clientflow-blush/20 text-clientflow-navy text-sm font-medium rounded-full mb-3">
+                    {category.category}
+                  </span>
+                  <h3 className="font-semibold text-clientflow-navy mb-2 group-hover:text-clientflow-coral transition-colors">
+                    {category.title}
+                  </h3>
+                  <p className="text-clientflow-charcoal/80 text-sm mb-3">
+                    {category.description}
+                  </p>
+                  <p className="text-clientflow-coral text-sm font-medium">
+                    {category.samples.length} samples available →
+                  </p>
+                </div>
+              </Card>
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
+    </section>
+  );
+}
